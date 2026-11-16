@@ -1,0 +1,13 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Tank War Cats — Tests</title>
+<pre id="out">running…</pre>
+<script>
+  // Stream console + errors to the dev server so headless runs can be observed.
+  const send = (s) => fetch('/log', { method: 'POST', body: s }).catch(() => {});
+  const ol = console.log;
+  console.log = (...a) => { ol(...a); send(a.map((x) => (typeof x === 'object' ? JSON.stringify(x) : String(x))).join(' ')); };
+  window.addEventListener('error', (e) => send('UNCAUGHT ' + e.message + ' @' + e.filename + ':' + e.lineno));
+  window.addEventListener('unhandledrejection', (e) => send('UNHANDLED ' + (e.reason && e.reason.stack || e.reason)));
+</script>
+<script type="module" src="./run-tests.mjs"></script>
